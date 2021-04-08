@@ -1,67 +1,33 @@
-import { useContext } from "react";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
-import { ValueContext } from "./BLE/BLEProvider";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { useStatus } from "./BLE/hooks";
+import { BatteryPage } from "./pages/BatteryPage";
+import { ConnectPage } from "./pages/ConnectPage";
+import { LightPage } from "./pages/LightPage";
+import { TeperatuerPage } from "./pages/TeperatuerPage";
+import { HomePage, WelcomePage } from "./pages/WelcomePage";
 import { SideNav } from "./sidenav/SideNav";
 
 export const Layout = () => {
-  const { valueState } = useContext(ValueContext);
-  const { connected, connecting, availability, failed } = useStatus();
+  const { connected } = useStatus();
+
   return (
-    <div className="">
-      <SideNav />
-      <div className=" mb-28 sm:mb-0 sm:ml-52  h-full">
+    <div className="p-4 md:p-8 lg:px-12 flex flex-col sm:justify-center sm:flex-row min-h-screen bg-gradient-to-br from-cyan-400 to-lightBlue-500  antialiased space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-12">
+      <div className=" p-4 md:p-8 md:w-full lg:max-w-4xl min-h-128 bg-white border-4 border-lime-400 rounded-3xl">
         {connected ? (
           <Switch>
-            <Route exact path="/">
-              <div className="h-screen flex items-center w-full">
-                <div className="w-full grid grid-cols-3 grid-rows-1 h-28 text-center">
-                  <Link to="/battery">
-                    <span> Battery </span>
-                  </Link>
-                  <Link to="/heartrate">
-                    <span> Heart Rate </span>
-                  </Link>
-                  <Link to="/heat">
-                    <span> Temperature </span>
-                  </Link>
-                </div>
-              </div>
-            </Route>
-            <Route path="/heat">
-              <h1>Heat</h1>
-              <span>{valueState.environmentalSensing?.temperature}</span>
-            </Route>
-            <Route path="/heartrate">
-              <h1>Heartrate</h1>
-              <span>{valueState.heartRate?.heartRate}</span>
-            </Route>
-            <Route path="/battery">
-              <h1>Battery</h1>
-              <span>{valueState.battery?.batteryLevel}</span>
-            </Route>
+            <Route exact path="/" component={WelcomePage} />
+            <Route path="/heat" component={TeperatuerPage} />
+            <Route path="/light" component={LightPage} />
+            <Route path="/battery" component={BatteryPage} />
             <Redirect to="/" />
           </Switch>
         ) : (
           <Switch>
-            <Route exact path="/">
-              <div className="flex h-screen justify-center items-center">
-                {connecting ? (
-                  <h1>Connecting...</h1>
-                ) : (
-                  <>
-                    <h1 className="text-gray-800 text-xl">
-                      Connect to a device
-                    </h1>
-                    {failed && <span>Faild to connect Try agen</span>}
-                  </>
-                )}
-              </div>
-            </Route>
-            <Redirect to="/" />
+            <Route path="/" component={HomePage} />
           </Switch>
         )}
       </div>
+      <SideNav />
     </div>
   );
 };

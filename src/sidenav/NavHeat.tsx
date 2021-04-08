@@ -10,10 +10,10 @@ export const NavHeat = () => {
         </svg>
         <span>Temperature</span>
       </div>
-      <div className="hidden invisible sm:flex flex-col sm:visible self-center  ">
+      {/* <div className="hidden invisible sm:flex flex-col sm:visible self-center  ">
         <span>20 C</span>
         <span>69%</span>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -28,14 +28,14 @@ import {
 //      - HandelValueChange  ->  removeEventListener
 //   { values of all characteristics }
 //////////
-type HeartRateValue = {
-  heartRate?: number;
-  contactDetected?: boolean;
-  energyExpended?: number;
-  rrIntervals?: number[];
+export type RGB = {
+  red: number;
+  green: number;
+  blue: number;
 };
+
 export type valueStateType = {
-  heartRate?: HeartRateValue;
+  Lights?: RGB;
   battery?: {
     batteryLevel?: number;
     batteryCharging?: boolean;
@@ -50,15 +50,16 @@ export enum TyValue {
   batteryCharging = "BatteryCharging",
   batteryDischarging = "BatteryDischarging",
   batteryLevel = "BatteryLevel",
-  heartRate = "HeartRate",
+  Lights = "Lights",
   temperature = "Temperature",
   humidity = "Humidity",
 }
+
 export type ValueActions =
   | { type: TyValue.batteryCharging; paload: boolean }
   | { type: TyValue.batteryDischarging; paload: boolean }
   | { type: TyValue.batteryLevel; paload: number }
-  | { type: TyValue.heartRate; paload: HeartRateValue }
+  | { type: TyValue.Lights; paload: RGB }
   | { type: TyValue.humidity; paload: number }
   | { type: TyValue.temperature; paload: number };
 
@@ -80,14 +81,14 @@ const valueReducer = (state: valueStateType, action: ValueActions) => {
         ...state,
         battery: { ...state.battery, batteryLevel: action.paload },
       };
-    case TyValue.heartRate:
+    case TyValue.Lights:
       return { ...state, heartRate: action.paload };
     case TyValue.humidity:
       return {
         ...state,
         environmentalSensing: {
           ...state.environmentalSensing,
-          temperature: action.paload,
+          humidity: action.paload,
         },
       };
     case TyValue.temperature:
@@ -95,7 +96,7 @@ const valueReducer = (state: valueStateType, action: ValueActions) => {
         ...state,
         environmentalSensing: {
           ...state.environmentalSensing,
-          humidity: action.paload,
+          temperature: action.paload,
         },
       };
     default:
@@ -187,52 +188,58 @@ export const ConnectAndDisconectContext = createContext<{
   Disconnect: () => any;
 }>({ Connect: () => null, Disconnect: () => null });
 
-function parseHeartRate(value: DataView) {
-  const data = value;
-  let result: {
-    heartRate?: number;
-    contactDetected?: boolean;
-    energyExpended?: number;
-    rrIntervals?: number[];
-  } = {
-    heartRate: 0,
-    contactDetected: undefined,
-    energyExpended: 0,
-    rrIntervals: [],
-  };
-  if (!data) return result;
-  let flags = data.getUint8(0);
-  let rate16Bits = flags & 0x1;
+export const LightCharContext = createContext<{
+  lightChar?: BluetoothRemoteGATTCharacteristic;
+}>({});
+// function parseHeartRate(value: DataView) {
+//   const data = value;
+//   let result: {
+//     heartRate?: number;
+//     contactDetected?: boolean;
+//     energyExpended?: number;
+//     rrIntervals?: number[];
+//   } = {
+//     heartRate: 0,
+//     contactDetected: undefined,
+//     energyExpended: 0,
+//     rrIntervals: [],
+//   };
+//   if (!data) return result;
+//   let flags = data.getUint8(0);
+//   let rate16Bits = flags & 0x1;
 
-  let index = 1;
-  if (rate16Bits) {
-    result.heartRate = data.getUint16(index, /*littleEndian=*/ true);
-    index += 2;
-  } else {
-    result.heartRate = data.getUint8(index);
-    index += 1;
-  }
-  let contactDetected = flags & 0x2;
-  let contactSensorPresent = flags & 0x4;
-  if (contactSensorPresent) {
-    result.contactDetected = !!contactDetected;
-  }
-  let energyPresent = flags & 0x8;
-  if (energyPresent) {
-    result.energyExpended = data.getUint16(index, /*littleEndian=*/ true);
-    index += 2;
-  }
-  let rrIntervalPresent = flags & 0x10;
-  if (rrIntervalPresent) {
-    let rrIntervals: number[] = [];
-    for (; index + 1 < data.byteLength; index += 2) {
-      rrIntervals.push(data.getUint16(index, /*littleEndian=*/ true));
-    }
-    result.rrIntervals = rrIntervals;
-  }
-  return result;
+//   let index = 1;
+//   if (rate16Bits) {
+//     result.heartRate = data.getUint16(index, /*littleEndian=*/ true);
+//     index += 2;
+//   } else {
+//     result.heartRate = data.getUint8(index);
+//     index += 1;
+//   }
+//   let contactDetected = flags & 0x2;
+//   let contactSensorPresent = flags & 0x4;
+//   if (contactSensorPresent) {
+//     result.contactDetected = !!contactDetected;
+//   }
+//   let energyPresent = flags & 0x8;
+//   if (energyPresent) {
+//     result.energyExpended = data.getUint16(index, /*littleEndian=*/ true);
+//     index += 2;
+//   }
+//   let rrIntervalPresent = flags & 0x10;
+//   if (rrIntervalPresent) {
+//     let rrIntervals: number[] = [];
+//     for (; index + 1 < data.byteLength; index += 2) {
+//       rrIntervals.push(data.getUint16(index, /*littleEndian=*/ true));
+//     }
+//     result.rrIntervals = rrIntervals;
+//   }
+//   return result;
+// }
+function parseRGB(value: DataView): RGB {
+  return { red: 21, blue: 10, green: 14 };
 }
-
+function numberToRGB(color: RGB = { blue: 10, green: 10, red: 10 }) {}
 interface ServicesAndCharacteristics {
   services: BluetoothRemoteGATTService[];
   characteristics: BluetoothRemoteGATTCharacteristic[];
@@ -240,13 +247,18 @@ interface ServicesAndCharacteristics {
 export const BLEProvider: FC = ({ children }) => {
   let blue = navigator.bluetooth ? true : false;
   const [BLEstate, BLEdispatch] = useReducer(bleReducer, { data: {}, ble: {} });
-  const { connected, connecting, availability, failed } = BLEstate.data;
+  const { connected, connecting, availability } = BLEstate.data;
 
   const [valueState, valueDispatch] = useReducer(valueReducer, {});
   const [sersAndChars, setSersAndChars] = useState<ServicesAndCharacteristics>({
     services: [],
     characteristics: [],
   });
+  const [
+    lightChar,
+    setLightChar,
+  ] = useState<BluetoothRemoteGATTCharacteristic>();
+
   // const allServices: servicesType[] = [
   //   {
   //     serviceUUID: "battery_service",
@@ -260,6 +272,11 @@ export const BLEProvider: FC = ({ children }) => {
   //     serviceUUID: "environmental_sensing",
   //     characteristicUUID: ["temperature", "humidity"],
   //   },
+  //   {
+  //     serviceUUID: "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+  //     characteristicUUID: [ "beb5483e-36e1-4688-b7f5-ea07361b26a8"],
+  //   },
+  //
   // ];
 
   // Availability
@@ -285,9 +302,8 @@ export const BLEProvider: FC = ({ children }) => {
 
   // Connect Function
   async function Connect() {
-    if (!availability) return;
-    if (connected) return;
-    if (connecting) return;
+    if (!availability || connected || connecting) return;
+
     let device: BluetoothDevice;
     let server: BluetoothRemoteGATTServer;
     try {
@@ -296,7 +312,7 @@ export const BLEProvider: FC = ({ children }) => {
         acceptAllDevices: true,
         optionalServices: [
           "battery_service",
-          "heart_rate",
+          "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
           "environmental_sensing",
         ],
       });
@@ -316,15 +332,19 @@ export const BLEProvider: FC = ({ children }) => {
       let services = await server.getPrimaryServices();
       setSersAndChars((prevState) => ({ ...prevState, services }));
       let characteristics: BluetoothRemoteGATTCharacteristic[];
-      services.forEach(async (v) => {
-        characteristics = await v.getCharacteristics();
+      services.forEach(async (service) => {
+        characteristics = await service.getCharacteristics();
         setSersAndChars((prevState) => ({
           ...prevState,
           characteristics: [...prevState.characteristics, ...characteristics],
         }));
 
         console.log(characteristics);
+
         characteristics.forEach(async (c) => {
+          if (c.uuid === "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
+            setLightChar(c);
+          }
           if (c.properties.notify) {
             await c.startNotifications();
             c.addEventListener("characteristicvaluechanged", HandelValueChange);
@@ -340,29 +360,34 @@ export const BLEProvider: FC = ({ children }) => {
     const char = e.target as BluetoothRemoteGATTCharacteristic;
     if (char.value) {
       const value = char.value;
+
       switch (char.uuid) {
         //Temperature
         case "00002a6e-0000-1000-8000-00805f9b34fb":
-          const a = value.getUint16(0);
-          valueDispatch({ type: TyValue.temperature, paload: a });
+          const a = value.getUint8(0) + value.getUint8(1) * 256;
+          // console.log("Temp: %o", value);
+          valueDispatch({ type: TyValue.temperature, paload: a / 100 });
           break;
         //Humidity
         case "00002a6f-0000-1000-8000-00805f9b34fb":
-          const hum = value.getUint16(0);
-          valueDispatch({ type: TyValue.humidity, paload: hum });
+          const hum = value.getUint8(0) + value.getUint8(1) * 256;
+          // console.log("Hum: %o", value);
+          valueDispatch({ type: TyValue.humidity, paload: hum / 100 });
           break;
-        // Heart Rate Measurement
-        case "00002a37-0000-1000-8000-00805f9b34fb":
-          const heartRate = parseHeartRate(value);
-          valueDispatch({ type: TyValue.heartRate, paload: heartRate });
-          break;
+
         // Battery Level
         case "00002a19-0000-1000-8000-00805f9b34fb":
-          const batteryLevel = value.getUint8(0);
+          const batteryLevel = value.getUint8(0) + value.getUint8(1) * 256;
+          // console.log(`Battery: ${batteryLevel} %o`, value);
+          console.log(batteryLevel);
           valueDispatch({ type: TyValue.batteryLevel, paload: batteryLevel });
           break;
         // Battery Power State
         case "00002a1a-0000-1000-8000-00805f9b34fb":
+          break;
+        case "beb5483e-36e1-4688-b7f5-ea07361b26a8":
+          const RGB = parseRGB(value);
+          valueDispatch({ type: TyValue.Lights, paload: RGB });
           break;
         default:
           break;
@@ -383,6 +408,7 @@ export const BLEProvider: FC = ({ children }) => {
     setSersAndChars({ characteristics: [], services: [] });
     console.log(e.target);
     BLEdispatch({ type: Ty.Disconnect });
+    setLightChar(undefined);
   }
   return (
     <>
@@ -390,7 +416,9 @@ export const BLEProvider: FC = ({ children }) => {
         <BLEContext.Provider value={{ BLEstate, BLEdispatch }}>
           <ConnectAndDisconectContext.Provider value={{ Connect, Disconnect }}>
             <ValueContext.Provider value={{ valueState, valueDispatch }}>
-              {children}
+              <LightCharContext.Provider value={{ lightChar: lightChar }}>
+                {children}
+              </LightCharContext.Provider>
             </ValueContext.Provider>
           </ConnectAndDisconectContext.Provider>
         </BLEContext.Provider>
