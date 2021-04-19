@@ -1,15 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "./index.scss";
+
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BLEProvider } from "./BLE/BLEProvider";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BLEProvider>
-      <App />
-    </BLEProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

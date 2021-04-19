@@ -12,9 +12,10 @@ export const useLogAll = () => {
 
 export const useStatus = () => {
   const { BLEstate } = useContext(BLEContext);
-  const { availability, connected, connecting, failed } = BLEstate.data;
+  const { device } = BLEstate.ble;
+  const { isAvailable, isConnected, connecting, failed } = BLEstate.data;
 
-  return { connected, availability, connecting, failed } as const;
+  return { isAvailable, isConnected, connecting, failed, device } as const;
 };
 
 export const useConnect = () => {

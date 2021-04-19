@@ -115,8 +115,8 @@ type ble = {
 };
 type BleState = {
   data: {
-    availability?: boolean;
-    connected?: boolean;
+    isAvailable?: boolean;
+    isConnected?: boolean;
     connecting?: boolean;
     failed?: boolean;
   };
@@ -143,7 +143,7 @@ export type ConnectionActions =
 const bleReducer = (state: BleState, action: ConnectionActions): BleState => {
   switch (action.type) {
     case Ty.AvailabilityChanged:
-      return { ...state, data: { availability: action.payload } };
+      return { ...state, data: { isAvailable: action.payload } };
     case Ty.Connecting:
       return {
         ...state,
@@ -160,14 +160,14 @@ const bleReducer = (state: BleState, action: ConnectionActions): BleState => {
         ble: action.payload,
         data: {
           ...state.data,
-          connected: true,
+          isConnected: true,
           connecting: false,
           failed: false,
         },
       };
     case Ty.Disconnect:
       return {
-        data: { ...state.data, connected: false, failed: false },
+        data: { ...state.data, isConnected: false, failed: false },
         ble: {},
       };
     default:
@@ -191,51 +191,7 @@ export const ConnectAndDisconectContext = createContext<{
 export const LightCharContext = createContext<{
   lightChar?: BluetoothRemoteGATTCharacteristic;
 }>({});
-// function parseHeartRate(value: DataView) {
-//   const data = value;
-//   let result: {
-//     heartRate?: number;
-//     contactDetected?: boolean;
-//     energyExpended?: number;
-//     rrIntervals?: number[];
-//   } = {
-//     heartRate: 0,
-//     contactDetected: undefined,
-//     energyExpended: 0,
-//     rrIntervals: [],
-//   };
-//   if (!data) return result;
-//   let flags = data.getUint8(0);
-//   let rate16Bits = flags & 0x1;
 
-//   let index = 1;
-//   if (rate16Bits) {
-//     result.heartRate = data.getUint16(index, /*littleEndian=*/ true);
-//     index += 2;
-//   } else {
-//     result.heartRate = data.getUint8(index);
-//     index += 1;
-//   }
-//   let contactDetected = flags & 0x2;
-//   let contactSensorPresent = flags & 0x4;
-//   if (contactSensorPresent) {
-//     result.contactDetected = !!contactDetected;
-//   }
-//   let energyPresent = flags & 0x8;
-//   if (energyPresent) {
-//     result.energyExpended = data.getUint16(index, /*littleEndian=*/ true);
-//     index += 2;
-//   }
-//   let rrIntervalPresent = flags & 0x10;
-//   if (rrIntervalPresent) {
-//     let rrIntervals: number[] = [];
-//     for (; index + 1 < data.byteLength; index += 2) {
-//       rrIntervals.push(data.getUint16(index, /*littleEndian=*/ true));
-//     }
-//     result.rrIntervals = rrIntervals;
-//   }
-//   return result;
-// }
 function parseRGB(value: DataView): RGB {
   return { red: 21, blue: 10, green: 14 };
 }
@@ -247,7 +203,7 @@ interface ServicesAndCharacteristics {
 export const BLEProvider: FC = ({ children }) => {
   let blue = navigator.bluetooth ? true : false;
   const [BLEstate, BLEdispatch] = useReducer(bleReducer, { data: {}, ble: {} });
-  const { connected, connecting, availability } = BLEstate.data;
+  const { isConnected, connecting, isAvailable } = BLEstate.data;
 
   const [valueState, valueDispatch] = useReducer(valueReducer, {});
   const [sersAndChars, setSersAndChars] = useState<ServicesAndCharacteristics>({
@@ -302,7 +258,7 @@ export const BLEProvider: FC = ({ children }) => {
 
   // Connect Function
   async function Connect() {
-    if (!availability || connected || connecting) return;
+    if (!isAvailable || isConnected || connecting) return;
 
     let device: BluetoothDevice;
     let server: BluetoothRemoteGATTServer;
@@ -396,7 +352,7 @@ export const BLEProvider: FC = ({ children }) => {
   }
   // Disconnect Function
   async function Disconnect() {
-    if (!connected) return;
+    if (!isConnected) return;
     try {
       await BLEstate.ble.server?.disconnect();
     } catch {}

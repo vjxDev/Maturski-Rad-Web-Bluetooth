@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { RgbColorPicker, RgbColor } from "react-colorful";
-import { useDebouncedCallback } from "use-debounce/lib";
 import { LightCharContext } from "../BLE/BLEProvider";
 
 export const LightPage = () => {
@@ -17,7 +16,6 @@ export const LightPage = () => {
 
   const update = async () => {
     console.log(lightColor);
-
     if (lightChar === undefined || dontWrite.current) {
       console.log("skip update");
       updateAgain.current = true;
