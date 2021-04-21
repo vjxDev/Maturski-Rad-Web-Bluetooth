@@ -5,13 +5,9 @@ export const TeperatuerPage = () => {
   const { valueState } = useContext(ValueContext);
   return (
     <>
-      <h1>Heat</h1>
-      <p>
-        <span>H:{valueState.environmentalSensing?.humidity}</span>
-      </p>
-      <p>
-        <span>T:{valueState.environmentalSensing?.temperature}</span>
-      </p>
+      <span>H:{valueState.environmentalSensing?.humidity}</span>
+
+      <span>T:{valueState.environmentalSensing?.temperature}</span>
     </>
   );
 };

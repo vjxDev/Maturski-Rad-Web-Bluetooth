@@ -195,7 +195,6 @@ export const LightCharContext = createContext<{
 function parseRGB(value: DataView): RGB {
   return { red: 21, blue: 10, green: 14 };
 }
-function numberToRGB(color: RGB = { blue: 10, green: 10, red: 10 }) {}
 interface ServicesAndCharacteristics {
   services: BluetoothRemoteGATTService[];
   characteristics: BluetoothRemoteGATTCharacteristic[];
@@ -288,7 +287,10 @@ export const BLEProvider: FC = ({ children }) => {
       let services = await server.getPrimaryServices();
       setSersAndChars((prevState) => ({ ...prevState, services }));
       let characteristics: BluetoothRemoteGATTCharacteristic[];
-      services.forEach(async (service) => {
+      services.forEach(async (service, i) => {
+        await new Promise((r) => setTimeout(r, i * 224));
+        console.trace();
+
         characteristics = await service.getCharacteristics();
         setSersAndChars((prevState) => ({
           ...prevState,
@@ -297,12 +299,25 @@ export const BLEProvider: FC = ({ children }) => {
 
         console.log(characteristics);
 
-        characteristics.forEach(async (c) => {
+        characteristics.forEach(async (c, j) => {
+          console.log(c, characteristics);
+
           if (c.uuid === "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
             setLightChar(c);
+            return;
           }
           if (c.properties.notify) {
-            await c.startNotifications();
+            console.time(c.uuid);
+            await new Promise((r) => setTimeout(r, j * 1654));
+            console.timeEnd(c.uuid);
+
+            try {
+              await c.startNotifications();
+
+              console.error("HEllo");
+            } catch (error) {
+              console.error(error, c.uuid);
+            }
             c.addEventListener("characteristicvaluechanged", HandelValueChange);
           } else {
             c.addEventListener("characteristicvaluechanged", HandelValueChange);

@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
 import { useConnect, useDisconnect, useStatus } from "../BLE/hooks";
-import { NavBattery } from "./NavBattery";
 
+import { NavBattery } from "./NavBattery";
 import { NavHeat } from "./NavHeat";
 import { NavLight } from "./NavLight";
 
@@ -9,26 +8,36 @@ export const SideNav = () => {
   const [Connect] = useConnect();
   const [Disconnect] = useDisconnect();
 
-  const { isConnected, failed, device } = useStatus();
+  const { failed, device, isConnected } = useStatus();
+
+  // const { failed, device } = useStatus();
+  // const isConnected = true;
 
   return (
-    <div className=" sm:flex sm:items-center flex-col justify-center">
-      <div className=" sticky top-20 space-y-2 sm:h-128 sm:w-52  flex flex-col sm:justify-center ">
-        <div className=" text-center flex flex-col space-y-2">
-          {isConnected ? (
-            <button
-              className="w-full h-16 sm:h-24 rounded-3xl font-semibold bg-white hover:bg-gray-200"
-              onClick={Disconnect}
-            >
-              Disconnect
-              <p className="text-sm font-normal">{device?.name}</p>
-            </button>
-          ) : (
+    <>
+      <div className="aside__top-nav">
+        <button className="aside__open-button">
+          <svg className="w-6 h-6 text-gray-800 mx-auto" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M14.88,16.29L13,18.17V14.41M13,5.83L14.88,7.71L13,9.58M17.71,7.71L12,2H11V9.58L6.41,5L5,6.41L10.59,12L5,17.58L6.41,19L11,14.41V22H12L17.71,16.29L13.41,12L17.71,7.71Z"
+            />
+          </svg>
+        </button>
+        <button className="aside__close-button" tabIndex={-1} disabled>
+          <svg className="w-6 h-6 text-gray-800 mx-auto" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div tabIndex={0} className="aside__wrapper">
+        <div className=" aside__buttons ">
+          {!isConnected ? (
             <>
-              <button
-                className="w-full h-16 sm:h-24 rounded-3xl font-semibold bg-white hover:bg-gray-200"
-                onClick={Connect}
-              >
+              <button className="" onClick={Connect}>
                 <svg
                   className="w-6 h-6 text-gray-800 mx-auto"
                   viewBox="0 0 24 24"
@@ -46,30 +55,21 @@ export const SideNav = () => {
                 </p>
               )}
             </>
+          ) : (
+            <button className="" onClick={Disconnect}>
+              Disconnect
+              <p className="text-sm font-normal">{device?.name}</p>
+            </button>
           )}
         </div>
         {isConnected && (
-          <nav className="  h-20 sm:h-96 place-content-center   ">
-            <ul className=" sm:py-0 grid grid-cols-3 grid-rows-1 sm:grid-cols-1 sm:grid-rows-3 h-full overflow-hidden rounded-3xl shadow-xl bg-white">
-              <li className=" ">
-                <Link to="heat">
-                  <NavHeat />
-                </Link>
-              </li>
-              <li className=" ">
-                <Link to="light">
-                  <NavLight />
-                </Link>
-              </li>
-              <li className=" ">
-                <Link to="battery">
-                  <NavBattery />
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <div className=" aside__info ">
+            <NavHeat />
+            <NavLight />
+            <NavBattery />
+          </div>
         )}
       </div>
-    </div>
+    </>
   );
 };

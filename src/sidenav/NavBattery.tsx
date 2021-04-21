@@ -1,6 +1,68 @@
+import { useContext, useEffect, useState } from "react";
+import { ValueContext } from "../BLE/BLEProvider";
+import { Line, ChartData } from "react-chartjs-2";
+import { ChartData as IChartData } from "chart.js";
+
 export const NavBattery = () => {
+  const options: Chart.ChartOptions = {
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [
+        {
+          gridLines: {
+            display: false,
+          },
+        },
+      ],
+
+      yAxes: [
+        {
+          ticks: {
+            min: 0,
+            max: 100,
+            beginAtZero: true,
+          },
+          gridLines: {
+            borderDash: [10, 5],
+          },
+        },
+      ],
+    },
+  };
+  const { valueState } = useContext(ValueContext);
+  const [chartData, setChartData] = useState<ChartData<IChartData>>({
+    labels: ["start"],
+    datasets: [
+      {
+        label: "% Battery",
+        data: [0],
+        fill: false,
+        backgroundColor: "hsl(189, 60%, 70%)",
+        borderColor: "hsla(182, 100%, 56%, 0.2)",
+      },
+    ],
+  });
+
+  useEffect(() => {
+    setChartData((prev: any) => {
+      let d: any;
+      if (prev.datasets?.[0].data) {
+        d = prev.datasets?.[0].data;
+        if (d.length > 150) {
+          prev.labels.shift();
+          d.shift();
+        }
+        prev.labels = [...prev.labels, new Date().toISOString().slice(17, 22)];
+        d = [...d, valueState.battery?.batteryLevel];
+        prev.datasets[0].data = d;
+        prev = { ...prev };
+      }
+
+      return prev;
+    });
+  }, [valueState.battery?.batteryLevel]);
   return (
-    <div className="w-full h-full text-center pt-2 sm:pt-0  flex flex-col justify-center hover:bg-gray-200">
+    <div className="">
       <svg className="h-6 w-6 mx-auto" viewBox="0 0 24 24">
         <path
           fill="currentColor"
@@ -8,6 +70,9 @@ export const NavBattery = () => {
         />
       </svg>
       <span>Battery</span>
+      <div className="chart">
+        <Line data={chartData} options={options} />
+      </div>
     </div>
   );
 };

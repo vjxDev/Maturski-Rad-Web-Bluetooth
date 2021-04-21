@@ -1,7 +1,12 @@
+import { useContext } from "react";
+import { ValueContext } from "../BLE/BLEProvider";
+
 export const NavHeat = () => {
+  const { valueState } = useContext(ValueContext);
+
   return (
-    <div className="w-full h-full sm:flex sm:flex-row text-center justify-around hover:bg-gray-200">
-      <div className="pt-2 sm:pt-0 flex flex-col justify-center h-full">
+    <div className="">
+      <div className="">
         <svg className="h-6 w-6 mx-auto" viewBox="0 0 24 24">
           <path
             fill="currentColor"
@@ -9,11 +14,10 @@ export const NavHeat = () => {
           />
         </svg>
         <span>Temperature</span>
+        <span>H:{valueState.environmentalSensing?.humidity}</span>
+
+        <span>T:{valueState.environmentalSensing?.temperature}</span>
       </div>
-      {/* <div className="hidden invisible sm:flex flex-col sm:visible self-center  ">
-        <span>20 C</span>
-        <span>69%</span>
-      </div> */}
     </div>
   );
 };

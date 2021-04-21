@@ -1,12 +1,24 @@
-import { BrowserRouter as Router } from "react-router-dom";
+import { BLEProvider } from "./BLE/BLEProvider";
 
-import { Layout } from "./Layout";
+import { HomePage } from "./pages/WelcomePage";
+import { SideNav } from "./sidenav/SideNav";
 
 function App() {
   return (
-    <Router>
-      <Layout />
-    </Router>
+    <>
+      <div className="title-bar"></div>
+
+      <div className="layout-grid container">
+        <main className="main">
+          <HomePage />
+        </main>
+        <aside className="aside">
+          <BLEProvider>
+            <SideNav />
+          </BLEProvider>
+        </aside>
+      </div>
+    </>
   );
 }
 

@@ -1,6 +1,43 @@
+import { useContext, useEffect, useRef, useState } from "react";
+import { RgbColorPicker, RgbColor } from "react-colorful";
+import { LightCharContext } from "../BLE/BLEProvider";
+
 export const NavLight = () => {
+  const [lightColor, setLightColor] = useState<RgbColor>({ r: 0, g: 0, b: 0 });
+  const { lightChar } = useContext(LightCharContext);
+
+  const changeColor = (c: RgbColor) => {
+    setLightColor(c);
+    color.current = c;
+  };
+  const dontWrite = useRef<boolean>(false);
+  const color = useRef<RgbColor>({ r: 0, g: 0, b: 0 });
+  const updateAgain = useRef<boolean>(false);
+
+  const update = async () => {
+    console.log(lightColor);
+    if (lightChar === undefined || dontWrite.current) {
+      console.log("skip update");
+      updateAgain.current = true;
+      return;
+    }
+    dontWrite.current = true;
+    await lightChar?.writeValue(
+      new Uint8Array([color.current.r, color.current.g, color.current.b])
+    );
+    await lightChar?.writeValue(
+      new Uint8Array([color.current.r, color.current.g, color.current.b])
+    );
+    dontWrite.current = false;
+  };
+
+  useEffect(() => {
+    update();
+    // eslint-disable-next-line
+  }, [lightColor]);
+
   return (
-    <div className="w-full h-full text-center pt-2 sm:pt-0 flex flex-col justify-center hover:bg-gray-200">
+    <div className="">
       <svg className="h-6 w-6 mx-auto" viewBox="0 0 24 24">
         <path
           fill="currentColor"
@@ -8,6 +45,18 @@ export const NavLight = () => {
         />
       </svg>
       <span>Light</span>
+      <div className="picker">
+        <button
+          tabIndex={0}
+          className="swatch"
+          style={{
+            backgroundColor: `rgb(${color.current.r},${color.current.g},${color.current.b})`,
+          }}
+        />
+        <div className="popover">
+          <RgbColorPicker color={lightColor} onChange={changeColor} />
+        </div>
+      </div>
     </div>
   );
 };

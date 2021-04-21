@@ -4,6 +4,7 @@ import { ValueContext } from "../BLE/BLEProvider";
 // import gfm from "remark-gfm";
 
 import ReactMarkdown from "react-markdown";
+
 export const WelcomePage = () => {
   const { valueState } = useContext(ValueContext);
 
@@ -125,7 +126,8 @@ export const WelcomePage = () => {
 };
 
 export const HomePage = () => {
-  const markdown = `# A demo of \`react-markdown\`
+  const markdown = `
+# A demo of \`react-markdown\`
 
 \`react-markdown\` is a markdown component for React.
 
@@ -267,7 +269,7 @@ ReactDOM.render(
 A component by [Espen Hovlandsdal](https://espen.codes/)`;
 
   return (
-    <>
+    <article className="main__wrapper">
       <h1 className="sm:text-lg sm:leading-snug font-semibold tracking-wide uppercase  mb-3">
         Matruski rad:
       </h1>
@@ -293,6 +295,6 @@ A component by [Espen Hovlandsdal](https://espen.codes/)`;
       <div className="markdown-body">
         <ReactMarkdown children={markdown}></ReactMarkdown>
       </div>
-    </>
+    </article>
   );
 };
