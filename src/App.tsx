@@ -1,6 +1,6 @@
 import { BLEProvider } from "./BLE/BLEProvider";
 
-import { HomePage } from "./pages/WelcomePage";
+import { HomePage } from "./WelcomePage";
 import { SideNav } from "./sidenav/SideNav";
 
 function App() {
