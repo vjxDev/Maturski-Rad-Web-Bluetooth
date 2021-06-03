@@ -286,46 +286,81 @@ export const BLEProvider: FC = ({ children }) => {
     try {
       let services = await server.getPrimaryServices();
       setSersAndChars((prevState) => ({ ...prevState, services }));
-      let characteristics: BluetoothRemoteGATTCharacteristic[];
-      services.forEach(async (service, i) => {
-        await new Promise((r) => setTimeout(r, i * 224));
-        console.trace();
+      let characteristics: BluetoothRemoteGATTCharacteristic[] = [];
 
-        characteristics = await service.getCharacteristics();
-        setSersAndChars((prevState) => ({
-          ...prevState,
-          characteristics: [...prevState.characteristics, ...characteristics],
-        }));
+      for (let i = 0; i < services.length; i++) {
+        const service = services[i];
+        let chars = await service.getCharacteristics();
+        await new Promise((r) => setTimeout(r, 100));
+        characteristics = [...characteristics, ...chars];
+      }
+      console.log(characteristics);
 
-        console.log(characteristics);
+      for (let i = 0; i < characteristics.length; i++) {
+        const c = characteristics[i];
+        console.log(`added `, c);
 
-        characteristics.forEach(async (c, j) => {
-          console.log(c, characteristics);
+        if (c.uuid === "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
+          setLightChar(c);
+          continue;
+        }
+        if (c.properties.notify) {
+          console.log("hello");
 
-          if (c.uuid === "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
-            setLightChar(c);
-            return;
-          }
-          if (c.properties.notify) {
-            console.time(c.uuid);
-            await new Promise((r) => setTimeout(r, j * 1654));
-            console.timeEnd(c.uuid);
+          await c.startNotifications();
 
-            try {
-              await c.startNotifications();
+          c.addEventListener("characteristicvaluechanged", HandelValueChange);
+        } else {
+          c.addEventListener("characteristicvaluechanged", HandelValueChange);
+        }
+      }
 
-              console.error("HEllo");
-            } catch (error) {
-              console.error(error, c.uuid);
-            }
-            c.addEventListener("characteristicvaluechanged", HandelValueChange);
-          } else {
-            c.addEventListener("characteristicvaluechanged", HandelValueChange);
-          }
-        });
-      });
-    } catch {}
-    console.log(valueState);
+      setSersAndChars((prevState) => ({
+        ...prevState,
+        characteristics: [...characteristics],
+      }));
+      console.log(valueState);
+
+      // services.forEach(async (service, i) => {
+      //   await new Promise((r) => setTimeout(r, i * 224));
+      //   console.trace();
+
+      //   characteristics = await service.getCharacteristics();
+      //   setSersAndChars((prevState) => ({
+      //     ...prevState,
+      //     characteristics: [...prevState.characteristics, ...characteristics],
+      //   }));
+
+      //   console.log(characteristics);
+
+      //   characteristics.forEach(async (c, j) => {
+      //     console.log(c, characteristics);
+
+      //     if (c.uuid === "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
+      //       setLightChar(c);
+      //       return;
+      //     }
+      //     if (c.properties.notify) {
+      //       console.time(c.uuid);
+      //       await new Promise((r) => setTimeout(r, j * 1654));
+      //       console.timeEnd(c.uuid);
+
+      //       try {
+      //         await c.startNotifications();
+
+      //         console.error("HEllo");
+      //       } catch (error) {
+      //         console.error(error, c.uuid);
+      //       }
+      //       c.addEventListener("characteristicvaluechanged", HandelValueChange);
+      //     } else {
+      //       c.addEventListener("characteristicvaluechanged", HandelValueChange);
+      //     }
+      //   });
+      // });
+    } catch (e) {
+      console.log(e);
+    }
   }
   function HandelValueChange(e: Event) {
     const char = e.target as BluetoothRemoteGATTCharacteristic;
