@@ -281,6 +281,9 @@ body {
   margin: 0;
   margin-bottom: 0.5rem;
 }
+.aside__text-subtitile > svg {
+  margin-right: 0.5rem;
+}
 .aside__text-small {
   font-size: 1rem;
   font-weight: 400;
@@ -301,7 +304,9 @@ body {
     margin: 1rem 0 0.25rem 0;
   }
 }
-
+.mt-2 {
+  margin-top: 1rem;
+}
 .ml-2 {
   margin-left: 0.5rem;
 }

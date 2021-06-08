@@ -1,1462 +1,465 @@
-# A demo of \`react-markdown\`
+# Kreiranje aplikacije za Web komunikaciju
 
-\`react-markdown\` is a markdown component for React.
+**Matruski rad** Tehnička škola Trstenik 2021
 
-👉 Changes are re-rendered as you type.
+**Profesor:** Radica Aleksandrov
 
-👈 Try writing some markdown on the left.
-
-### Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-Pretty neat, eh?
-
-## GitHub flavored markdown (GFM)
-
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+**Učenik:** Jovica Veljković - [vjocasb@gmail.com](mailto:vjocasb@gmail.com)
 
 ---
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+# 1 Uvod
 
-# A demo of \`react-markdown\`
+Velika upotreba interneta je dovela do razvoja _web_ aplikacija i njihovih sposobnosti. Danas nam _web_ omogućava da radimo sve od online kupovine i pisanja dokumeneta do izmene fotografija i upotrebe veštačke inteligencije. Internet nam dozvoljava da pišemo _kod_ za aplikacije koji instovremeno radi na svim platformama i uređajima, bilo to računari ili telefoni. Motiv za izbor ove teme maturskog rada je praktično primenjivanje znanja koje je steceno u srednjoj školi iz predmeta programiranja, elektronike i mikrokontrolera.
 
-\`react-markdown\` is a markdown component for React.
+Tokom istraživanja sposobnosti _web_ komunikacije otkriveno je da aplikacije napisane u programskom jeziku javascript u pretraživaču imaju sposobnost da komuniciraju sa drugim uređajuma putem Bluetooh-a. Odatle je prostekla ideja da se napravi program za mikrokontroler koji će da meri temperaturu i vlažnost vazduha i izmerene podatke da šalje preko Bluetooth-a _web_ aplikaciji. Web aplikacija bi pprikazivala podatke korisniku na ekranu. Osim ovoga na mikrokontroler su povezani lampica, cija se boja menja putem _web_ aplikacije i potencimetar se koristi kao unos korisnika.
 
-👉 Changes are re-rendered as you type.
+Ova kombinacija _web_ aplikacije i mikrokontrolera može se razviti u realan proizvod kategorije - pametna kuća. Aplikacija napravljena je prezentacionog tipa i pokazuje koliko potencijala imaju progresivne _web_ aplikacije; dok program napisan za mikrokontroler prati sve standarde Bluetooth-a i prikazuje tačne podatka nebitno koji se aplikacija ili uređaj poveže sa njim.
 
-👈 Try writing some markdown on the left.
+# 2 Web
 
-## Overview
+## 2.1 Web aplikacije
 
-## Overview
+_Web_ aplikacij je program kojem možemo da pristupimo putem internet pretraživača na bilo kom uređaju. _Web_ aplikacije maju široku upotrebu,mogu se koristiti za raznovrsne tipove zadataka od online kupivine do zakazivanja pregleda kod doktora. Velika prednost ovih aplikacija je da ne moraju biti instalirane, dok se desktop i mobilne aplikacije moraju preuzeti i intalirati. Proces preuzimanja i instalacije do sporiji od upotrebe _web_ aplikacije.
 
-- Follows [CommonMark](https://commonmark.org)
+## 2.2 Web standardi
 
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
+Sve _web_ tehnologije spadaju u _web_ standarde. Ovi standardi opisuju kako tehnologija treba da radi i pišu se u dokumntima koji se nazivaju spesifikacije. Spesifikacije detaljno opisuju svaki deo standarda i zato nisu najbolji sredstvo za učenje, već ove dokumente koriste programeri koji prave _web_ pretraživač.
 
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
+Za _web_ standarde kažemo da su "živi" odnosno da se stalno menjaju i nadograđuju. Njih održavaju i standardizuju tela kao na primer WHATWG ( održava HTML standard ), ECMA ( održava JavaScript ), Khronos ( održava standard za 3d grafiku WebGL ), i mnogi drugi.
 
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
+Tehnologije neophodni za rad web-a su :
 
-- Has a lot of plugins
+1. Pretraživači
+2. HTTP ( **H**yper**T**ext **T**ransfer **P**rotocol )
+3. HTML ( **H**yper**T**ext **M**arkup **L**anguage )
+4. CSS ( **C**ascading **S**tyle **S**heets )
+5. JavaScript
 
-## Table of contents
+## 2.3 Pretraživači
 
-Here is an example of a plugin in action
+Pretraživac je aplikacioni program koji se nalazi na računari, omogućava nam pristupimo internetu. Pomoću pretraživača možemo da pristupimo bilo kojoj stranici i čitamo je sa bilo kog uređaja. Posao pretaživača je da pronađe stranicu koju je korisnik traži pomoću URL odsnosno linka. Ovo se radi preko HTTP ili HTTPS protkola. Kada dobije sadržaj stranice pretraživač treba da prikaže šta se nalazi na stranici prateći web standarde.
 
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
+## 2.4 HTML
 
-This section is replaced by an actual table of contents.
+HTML je jezik za opis hiper-teksta, odnosno sve što vidimo kad otvorimo stranicu. Sastoji se iz elemenata koji daju oblik i značenje stranici. Ovo je osnova svakog sajta i HTML predstavlja ulaz na bilo koju stranicu.
 
-## Syntax highlighting
+Svi elementi imaju ime i svoje značenje. Na primer `<h1> Naslov </h1>` predstavlja naslov, a `<p>tekst</p>` predstavlja paragraf. Elementi takođe mogu da se nalaze jedan u drugom, liste `<ol><li> element liste </li></ol>`. Postoje elmenti koji ne mogu da imaju druge element u sebi kao slike `<img src="slika.jpg"></img>`. Na svaki element možemo da dodamo atribute kao na primer class ili ID koji nam daje sposobnost da damo stil elementu preko css-a.
 
-Here is an example of a plugin to highlight code:
+```html
+<div class="mreza">
+  <h1 id="naslov">Zdravo</h1>
+  <h2>Ovo je izgled mreže</h2>
+  ...
+</div>
+```
 
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
+U HTML može se povezati sa css i javascript-om koji daju stil i prave stranicu interaktivnom. CSS i JS mogu direktno da se pišu u HTML-u sa elemetima `<script></script>` za JS ili `<style></style>` za css. Ovaj način povezivanja se retko koristi, jednostavnije je povezivanje preko fajlova koji se mogu nalaziti bilo gde.
 
-```js
-import React from "react";
+```html
+<link rel="stylesheet" href="stajl.css" />
+<!-- za Css -->
+<script src="mojaskripta.js"></script>
+<!--za Javascript -->
+```
 
-import ReactDOM from "react-dom";
+### 2.4.1 JSX
 
-import Markdown from "react-markdown";
+Html sam po sebi je odličan za stranice koje se ne manjaju tokom upotrebe, ali tomu je i glavna mana, zato se koristi javascript za dodavanje interaktivnosti stranicama. U ovom projektu se koristi javascript biblioteka po imenu React. React koristi specijalnu formu html-a po imenu jsx koji omogućava pisanje html u javascript-u
 
-import rehypeHighlight from "rehype-highlight";
-
+```jsx
 ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 ```
 
-Pretty neat, eh?
+## 2.5 CSS
 
-## GitHub flavored markdown (GFM)
+CSS je programski jezik koji omoguđava menjanje oblika teksta, pozicuju slika i načina na koji će se elementi ponašati. Svi elementi stranice su kutije bez definicije gde treba da se nalaze i kako treba da izgledaju. Za dodavanje izgleda elementu koristimo selektore. Selektori mogu da budu elementi ( `div` ili `h1` ), klase ( `.mreža` ) i ili id ( `#id` ) koji se dodaju kao atributi na element. Klase mogu da se koriste na više elemenata dok id mora da bude jedinstven i može se koristi samo na jednom elementu.
 
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
+```css
+.mreza {
+  disply: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 200px 200px;
+}
 ```
 
-## More info?
+![img/Untitled.png](img/Untitled.png)
 
-Much more info is available in the
+Zelenom bloku je data osobina mreže, a u njemu se nalaze više manjih blokova sa centriranim tekstom
 
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+Css radi na bazi pravila, kada izaberemo selektor u njemu upisujemo pravila kako će elementi sa tim selektorom ponašati na stranici. Svakom elementu mogu se menjati margine, padding i gde će da se nalazi. Tekstu možemo da menjamo font, veličinu, visinu linije, boju i druge sobine.
+
+Bitna karakteristika modernog _web_ dizajna je da stranica bude adaptivna na veličinu ekrana, e po pristupanju sajtu na mobilnom uredjaju ocekivano je da raspored navigacije i drugih elemenata bude promenjen i prilagodjen malom ekranu mobilnog uredjaja.
+
+### 2.5.1 SCSS
+
+Scss je programski jezik koji programeru olakšava rad sa css-om. Pošto pretraživač samo razume css, scss se kompajlira u css pre nego što se koristi u pretraživaču. Ovaj projekat koristi samo scss kako bi kod izgledao urednije i kako bi bio laksi za odrzavanje.
+
+## 2.6 Javascript
+
+Javascript je programski jezik koji se koristi na web-u i koristi se za dodavanje interaktivnosti na web stranici. Ovaj programski jezik može da obavlja razlicite zadatke. Od dodavnja interakcije pritiskom na dugme, učitavanje podataka sa bloga do kmplikovanog crtanja 3D geometrije. Javascript programski jezik može direktno da utiče na HTML i CSS koji se nalazi na stranici i otvara mogućnost da svaki korisnik ima jedisnten utisak pri korišćenju sajta. Javascript se čak može naći na serverima u obliku Node.js [] i desktop aplikacijama pomoću Electron-a [].
+
+Računari razumeju samo jednu stvar, jedinice i nule, javascript je interpretiran programski jezik koji mora da se prevede u mašinski kod. Kada dodamo js fajl u html sajta, pretraživač mora da pročita, prevede i kompajlira kod u mašinski jezik. Ovo u Chrome pretraživaču radi V8 engine. Pre modernog web-a Javaskrip je bio spor programski jezik pošto je samo kompalirao deo koda koji se koristi u tom trenutku. Svi moderni pretraživači kompaliraju sve js fajlove kada se učitaju na stranici i time znatno ubrzaju rad. Ovaj programski jezik može da koristi samo jednu nit pri radu, odnosno može da radi samo jedan posao u jednom trenutku.
+
+Javascript ima sve standarne funkcije koje očekujemo kao profameri ( if, else, switch, for itd. ), ali jedna specificna osobina ovog jezika jeste rad sa tipovima podataka. Za razliku od na primer c programskog jezika gde jedna promenljiva može da bude samo jednog tipa, javascript promenljive mogu da budu bilo kog tipa. Podržava sledeće tipove podataka:
+
+1. Brojeve ( racionalne i realne ) `let broj = 10;`
+2. Niske `let rec = "tekst";`
+3. Boolean ( jednakosti i nejednakosti) `let istina = true;`
+4. Nedefinisano i null `let prazno = null;`
+5. Objekte i nizove `let niz = [];`
+6. Funkcije `let f = () => {};`
+
+Promenljive se mogu deklarisati pomoću tri operatora: `var`, `let` i `const`.
+
+Reč `var` se retko koristi pošto može da pravi probleme, zato se koristi let i const. Kad se koristi `let`, vrednost te promenljive se moze menjati , dok pri korišćenju `const` vrednost se ne moze promeniti
+
+Upotrebom javascript-a se moze pristupiti mnogim aplikacionim programskim interfejsima koji omogucavaju pristup raznim delovima računara, na primer, kameri, gps lokaciji ili u primeru ovog projekta Bluetooth LE komunikaciji.
+
+Prethodno je zakljuceno da se, elementima stranice mogu dodati autributi kao class i id. Ovi atributi se ne koriste samo za dodavanje stila stranici, već se koriste i u Javascript-u za pronalaženje elementata i menjanje njihovih osobina. Kako bi ove opcije mogle biti koriscene mora se koristit aplikacioni programski interfejs “document” koji je povezan sa html stranicom.
+
+_Primer_: U programu se moze napraviti promenljiva u kojoj ce se zapamtiti dugme. U tom dugmetu se moze napisati tekst “Klikni me” Kada se dugme klikne, boja mu moze biti promenjena u plavu.
+
+```jsx
+const dugme = document.getElementById("dugme");
+dugme.innerText = "Klikni me";
+dugme.onclick = () => {
+  dugme.style.color = "blue";
+};
+```
+
+## 2.6.1 React
+
+Održavanje ovakvog koda može vrlo brzo da postane komplikovano. Zato se koriste bibloteke koje olakšavaju rad sa js i html kao React, Angular i Vue. Kod koji se koristi za pisanje aplikacija sa bibliotekama mora biti preveden u običan javascript. Za ovo se uglavnom koristi Webpack koji prevodi kod u javascript i optimizuje kod da finalni js fajl bude što manji. U primeru ovog projekta finalna veličina sa svim bibliotekama koje se koriste je 150kB. U ovaj kod se računa kod i biblioteke kao react i chart.js ( biblioteka za crtanje grafika ).
+
+React omogućava pisanje dinamičkog koda sa komponentama. Komponenta je mali izolovani deo koda u kome se definišu sve promenljive, funkcije i dešavanja koja utiču na mali deo koda. Manji grupisani delovi koda su uvek lakši za pronalaženje i ispravljanje grešaka. Koriscenjem komponenta se postize bolja organizacija koda.
+
+```jsx
+import { useState } from "react";
+export const BugmeBroj = () => {
+  const [broj, setBroj] = useState(1);
+  const Dodaj = () => {
+    setBroj(broj + 1);
+  };
+  return <button onClick={Dodaj}>{broj}</button>;
+};
+```
+
+Biblioteka omogućava da se kodu odmah doda slušač za klik digmeta. Ovde se moze videti da se direkto u html-u upisuje promenljivi broj, što je nemoguće u običnom html-u. Ako se desi promena vrednosti promenljive to se odmah menja u html-u dokumenat. Kada se klikne na dugme poziva se funkcija Dodaj koja povećava vrednost broja za jedan.
+
+React omogućava da korištenje globalne promenljive kojima se moze menjati vrednost iz bilo koje komponente. Ovo se radi preko createContext i useReducer. Kada se napravi globalan kontekst, u svakoj podkomponenti tog konteksta može se pristupiti vrednostima koje su dodelene kontekru. U ovoj aplikaciji kontekst se koristi za prenošenje trenutnih vresnoti koje su pročitane sa Bluetooth uređaja.
+
+## 2.6.2 Typescript
+
+Jedna od mana Javascript-a je što promenljive mogu da budu bilo kog tipa. Posle kratkog vremena ovo može buti problem, veoma brzo moze doci do zabune sta koji deo koda radi kako je medjusobno povezan. . Zato se koristi Typescript koji omogućava definisanje kog će tipa biti neka promenljiva. Ovim se mogu zaustaviti mnogi bagovi i greske pre nego što se pošto kod editor obavesti da o grešci. Da bi pretraživači razumeli ts fajl mora da se prevede u js fajl što može da se radi preko Webpack-a. Typescript je glavni progamski jezik koji se koristi u ovom projektu.
+
+```tsx
+export type valueStateType = {
+  Lights?: RGB;
+  battery?: {
+    batteryLevel?: number;
+    batteryCharging?: boolean;
+    BatteryDischarging?: boolean;
+  };
+  environmentalSensing?: {
+    temperature?: number;
+    humidity?: number;
+  };
+};
+```
+
+# 3 Bluetooth
+
+Bluetooth je tehnologija za bežični prenos podataka između dva uređaja koja podražavaju Bluetooth standard. Omogućava komunikaciju između uređaja bilo kog tipa, bilo to telefoni, IOT uređaju, slušalice, čak i mikrotalasne i veš mašine. Podaci se prenose putem radio signala frekfencije od 2.402 GHz do 2.48 GHz, može da prenosi podatke na razdaljini do 400 metara u idealnim okolnostima. Brzina prenosa podataka može da dostigne brzinu od 24 mbps. Bluetooth je idealan za uređaje koji hoće da prenose iste ili slične tipove podataka sa malom potrošnjom energije.
+
+![./img/Bluetooth_CM_ColorBlack-400x160.png](./img/Bluetooth_CM_ColorBlack-400x160.png)
+
+Bluetooth održava Bluetooth Special Interest Group ( SIG ), rade u sferama telekomunikacije, račinarskim mrežama i elektronici. Bluetooth SIG definiše specifikaciju i implementaciju ovog standarda. Oni dizajniraju i lecenciraju čipove koji onda mogu da se koriste u drugim uređajuma.
+
+Pošto se bluetooth koriste za razne aplikacije, bluetooth uređaj mora da ima profil u kome kažu šta koje aplikacione standrde uređaj podržava. Primer često korišćenih profila su:
+
+1. Bežična kontrola i komunikacija između mobilnih uređaja i bežičnih slušalica ili zvučnika.
+2. Upotreba telefona kao digitalni ključ sa otključavanje kuće, automobila i drugih stvari.
+3. Prenos podatakasa fitnes uređajima na mobilne telefone.
+4. Upotreba bežičnih miševa, tastatura i štampača.
+
+Nije svaki bluetooth uređaj napravljen na isti način. Već svaki ima svoju namenu. Zato su izmišljene razlišite klase bluetooth sposobnih uređaja. Idu od prve do četvrte klase i razlika između svake klase je potrošnja evergije, daljina prenosa i brzina prenosa podataka. Najčešća klasa u uređajima je klasa dva koja troši samo 2.5 mW i tipičnu daljinu prenoda od 10 metara.
+
+### 3.1 Bluetooth low energy (BLE)
+
+Sa verzijom Bluetooth 4 dobili smo novi mod rada bluetooth urećaja po imenu Bluetooth low energy ili BLE ili samo LE čija je brzina prenosa podataka ograničena na otprilike 1 mbps i dozvoljava da radio tranzmitori budu skoro uvek isključeni. Ovo je odbojen standard od klasičnog bluetooth-a ali oba standarda mogu da rade istovremeno na uređaju. []
+
+Većina uređaja i alikacija koje korsite BLE koristi Generic Attribute Profile (GATT) za prenos malih podataka tokom rada. GATT nam nudi parove ključeva i vrednosti preko kojih prenosimo podatke. U serveru se čuvaju servisi, svaki servis ima jedinstven uuid koji ga opisuje. Unutar servisa se nalaze karakteristike u kojima su cuvani podatci koji trebaju biti preneseni,oni takodje imaju jedisntven uuid. Karatkteristikama se mogu dodati opisi koji kazu da li je temepratura u °C ili °F. Karatkeristaka se takodje mogu dodati pravila na koji će način raditi, ovo samo može da menja emitor.
+
+Postoje standardizovani servisi i karakteristike koje je definisao SIG, ali pojedinac moze sam napraviti svoje servise i katakteristike []. Ovo su na primer:
+
+1. BLP (Blood Pressure Profile)
+2. Battery Service
+
+Tokom BLE komunikacije uređaji mogu da rade jedan od dva stanja:
+
+1. Emitor, ovo je uređaj na koji se povezuje i na kome postoji GATT server sa kojim se komunicira. Ovaj uređaj može poslati notifikaciju da se desila promena na server i time aktiviran neki kod na posmatraču.
+2. Posmatrač je urećaj koji se povezuje na emitor i tris tipa podacima koji se nalaze na GATT serveru.
+
+U aplikaciji za ovaj projekat GATT ima sledeći oblik:
 
 ---
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+**GATT server**
 
-# A demo of \`react-markdown\`
+**Servisi**
 
-\`react-markdown\` is a markdown component for React.
+**Karakteristike**
 
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-Pretty neat, eh?
-
-## GitHub flavored markdown (GFM)
-
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+ESP32
 
 ---
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+Battery service
 
-# A demo of \`react-markdown\`
+Environmental sensing
 
-\`react-markdown\` is a markdown component for React.
-
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-Pretty neat, eh?
-
-## GitHub flavored markdown (GFM)
-
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+Servis za LED
 
 ---
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+Nivo baterije
 
-# A demo of \`react-markdown\`
+Temperatura
 
-\`react-markdown\` is a markdown component for React.
+Vlažnost vazduha
 
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-Pretty neat, eh?
-
-## GitHub flavored markdown (GFM)
-
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+Svetlost
 
 ---
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+### 3.2 Web Bluetooth
 
-# A demo of \`react-markdown\`
+Jedna od novih funkcija je upotreba Web Bluetooth-a za komunikaciju sa drugim uređajima upotrebom BLE. Web bluetooth-u se moze pristupiti pomocu aplikacionog programskog interfejsa koji se nalazi u pretraživaču. []
 
-\`react-markdown\` is a markdown component for React.
+Pristup bluetooth-u se moze poceti nakon provere da li pretraživac i uređaj podržavaju aj API. Nakon ovoga, ako poržava API, treba se povezati upotrebom `navigator.bluetooth.requestDevice()` kao argument ovoj funkciji se može ubaciti kojem tipu uređaja se želi obaviti povezivanje i/ili koje servise taj uređaj treba da podržava. Vrednost koja se dobija iz ove funkcije je bluetooh uređaj. Jedan od objekata u ovom objektu je GATT server. Iz GATT servera može se dobiti pozovati `server.getPrimaryServices();` gde se dobija sve servise servera. Nakon toga se mogu pronaci sve karakteristike sa `service.getCharacteristics();`. Odavde se može pristupiti vrednostima servisa putem characteristic.value. Da bi se menjala vrednost karatkeristike kosristi se funkcija `lightChar.writeValue();`
 
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
+```jsx
+device = await navigator.bluetooth.requestDevice({
+  acceptAllDevices: true,
+  optionalServices: [
+    "battery_service",
+    "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+    "environmental_sensing",
+  ],
+});
+let server = await device.gatt.connect();
+let services = await server.getPrimaryServices();
+for (let i = 0; i < services.length; i++) {
+  const service = services[i];
+  let chars = await service.getCharacteristics();
+  characteristics = [...characteristics, ...chars];
+}
+for (let i = 0; i < characteristics.length; i++) {
+  const c = characteristics[i];
+  await c.startNotifications();
+  c.addEventListener("characteristicvaluechanged", handelValueChange);
+}
 ```
 
-Pretty neat, eh?
+# 4 ESP32 mikrokontroler
 
-## GitHub flavored markdown (GFM)
+ESP32 je serija prispupacnih sistem na čipu mikrokontrolera koji imaju integrisan Wi-Fi i Bluetooth clasic i BLE. Mikrokontorleri su postali veoma popularni, jer su mnogo jednostavnijii za rad za razliku od Arduino serije mikrokontrolera. ESP32 dizajnira i proizvodi kineski proizvođač Espressif[]. U ovom projektu se koristi ESP-WROOM-32 sistem na čipu koji ima 2 jezgra i radi na 3.3v.
 
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
+![https://raw.githubusercontent.com/AchimPieters/esp32-homekit-camera/master/Images/ESP32-38%20PIN-DEVBOARD.png](https://raw.githubusercontent.com/AchimPieters/esp32-homekit-camera/master/Images/ESP32-38%20PIN-DEVBOARD.png)
 
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
+ESP32 je veoma prilagodljiv za sve tipove poslova gde je neophodan sposoban mikrokontroler. Dva jezga omoguđavaju rad više poslova u isto vreme. U ovom projektu se koristi multiprocesiranje za više poslova. Integrisan Bluetooth, Bluetooth LE i WiFi zajedno omogućavaju široku upotrebu ovog uređaja. WiFi daje moguđnost koriscenja IOT uređaja, odnosno uredjaja za pametne kuće. Model koji se koristi u ovom projektu ima 38 pinova, od kojih je:
 
-~~strikethrough~~
+- 18 podržavaju analognu u digitalnu konverziju,
+- 2 I2C interfejs,
+- 16 su izlazni sa širinsko-impulsnom modulacijom PWM,
+- 2 izlazna pina sa digitalnim u analognom konverzijom dubine 8 bita.
 
-- [ ] task list
+Na slici se mogu videti, pinovi koji podržavaju više opcija tako da pre upotrebe treba odrediti na koji način ćebiti korisceni.
 
-- [x] checked item
+![./img/Espressif_ESP32_Chip_Function_Block_Diagram.svg](./img/Espressif_ESP32_Chip_Function_Block_Diagram.svg)
 
-https://example.com
+Operativni sistem na kome radi ovaj sistem na čipu je freeRTOS. Hardware čipa podržava funkcije za ubrzavanje specifičnih zadataka kao obrađivanje slike i zvuka, tako i i upotrebu kriptografskih funkcija SHA, RSA i AES.
 
-## HTML in markdown
+Programski jezik koji se korisit za rad se ESP32 uređajuma je C++.U toku pisanja programa, kod se kompajlira se specijlnim kompajlerom koji je napisao espressif. Ovo osiguruje brz i efikasan rad sa svim optimizacijama koje su moguće za dati čip. IZABERI Jedno/Prvo jezgro cipa bi trebalo biti korisceno za rad programa, dok se nulto jezgro koristi za Bluetooth i Wi-Fi komunikaciju.
 
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
+### 4.1 Bluetooth
 
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
+U ovom projektu se često koristi multi procesiranje za obradu podataka koji se dobijaju iz biblioteke za Bluetooh ili za čitanje podataka sa senzora koji su povezani na esp. Da bi bluetooth radio, neophodno je da se inicijalizuje sa svim servisima i karakteristikama koje će se koristiti.
 
-You should probably combine it with
+Za inicijalizaciju servisa i karakteristika mora se imati njihov UUID. Standardizovani servisi i karakteristike već imaju predhodno definisan UUID, dok za stvarikoje se osmisle se koristi proizvoljan UUID koji je standardnog oblika.
 
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
+```cpp
+#define LIGHT_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define LIGHT_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
-<blockquote>
+#define ENV_SENSING_SERVICE_UUID "0000181a-0000-1000-8000-00805f9b34fb"
+#define TEMPERATURE_CHARACTERISTIC_UUID "00002a6e-0000-1000-8000-00805f9b34fb"
+#define HUMIDITY_CHARACTERISTIC_UUID "00002a6f-0000-1000-8000-00805f9b34fb"
 
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
+#define BATTERY_SERVICE_UUID "0000180f-0000-1000-8000-00805f9b34fb"
+#define BATTETY_LEVEL_CHARACTERISTIC_UUID "00002a19-0000-1000-8000-00805f9b34fb"
+#define BATTETY_POWER_STATE_CHARACTERISTIC_UUID "00002a1a-0000-1000-8000-00805f9b34fb"
 ```
 
-## More info?
+### 4.2 Senzori i komponente
 
-Much more info is available in the
+Senzoru su idealan način ogledanja šta se dešava u okolini i pretvaranje tih podataka u digitalni oblik. Komponente koje se koriste ovde su digitalne kao display ili analogne kao potenciometar. Ovaj devizitet prikazuje široku upotrebu i sposobnost ovog čipa. U ovom projektu se na ESP32 povezuje više komponenta. Ovo su:
 
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+1. Senzor sa merenje vlažnosti vazduha i temperature (DHT11)
+2. LCD Display ( LCD1602 )
+3. LED Diodu koja može da menja boje
+4. Potenciometar
 
----
+### 4.2.1 DHT
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+Senzor vlažnosti vazduha i temperature omoguđava detaljno merenje okoline. Senzsor je pristupacan i daje merenja u rezoluciji merenja od 0.1% i 0.5ºC, i grešku merenja temperature od +/-2ºC i i vlažnosti vazduha od +/-5%. Jedna mana ovog senzore je relativno dugo vreme cekanja izmedju merenja, odprilike jedna do dve sekunde.
 
-# A demo of \`react-markdown\`
+Biblioteka se koristi da bi se čitala vrednost ovog senzora `DHT.h`. Ona omogućava lako čitanje podataka. Senzor se sastoji iz 4 pina.o su pin za uzemljenje, napon i pin za čitanje ( jedan pin se ne koristi ).
 
-\`react-markdown\` is a markdown component for React.
+![https://lh6.googleusercontent.com/I62uAWgfk2Qs2YomkUtHp7V1L9EMtJTqaii5UiRGB3mLZ0jMUdokiRt46hpZWwq-9sv2AqhWehU-j2oVAjr8lVhcfVKOFbgnbPgbyxI2AvR7-wZ6AdcNsGuKvL_ngOHYVkscI2CJ](https://lh6.googleusercontent.com/I62uAWgfk2Qs2YomkUtHp7V1L9EMtJTqaii5UiRGB3mLZ0jMUdokiRt46hpZWwq-9sv2AqhWehU-j2oVAjr8lVhcfVKOFbgnbPgbyxI2AvR7-wZ6AdcNsGuKvL_ngOHYVkscI2CJ)
 
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
+```cpp
+float h = dht.readHumidity();
+float t = dht.readTemperature();
 ```
 
-Pretty neat, eh?
+### 4.2.3 Dislay
 
-## GitHub flavored markdown (GFM)
+LCD Display je ekran veličine 16x2 gde je svako polje ekrana veličine 5x8 piksela. U svakom polju može se napisati jedan znak, znak može biti iz alfabeta ili azbuke, po polju se čak može i crtati specijalni karakter koji se mogu definisati.
 
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
+Display-u se šalju komande pomoću I2C standarda za komunikaciju koji ESP podržava. Za slanje podataka postoji biblioteka `LiquidCrystal_I2C.h`. Upotrebom biblioteke može se menjati pozicija kursera, koji će se znak pisati i druge funkcije.
 
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
+```cpp
+lcd.print("Humidity: ");
+lcd.print(h);
+lcd.setCursor(0, 1);
+lcd.print("Temp: ");
+lcd.print(t);
 ```
 
-## More info?
+### 4.2.3 LED
 
-Much more info is available in the
+LED dioda je standardna mala dioda sa 3 male diode crvene, zelene i plave boje. Ovo daje ceo spektrum boja pri korišćenju lampice. Ove male diode su povezane sa zajedničkom anodom, što znači da svetlost svake male diode kontroliše pomoću katode.
 
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+Direktno povezivanje katode na esp nije opcija pošto je maksimalni izlaz pinova na čipu 50mA. Ovo nije dovoljno za diode, zato se koriste tranzistori koji pojačavaju struju do 0.5 A.
 
----
+Za menjanje boje diode koristi se sledeći kod:
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+![https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/03/ESP8266-LED-strip.png?quality=100&strip=all&ssl=1](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/03/ESP8266-LED-strip.png?quality=100&strip=all&ssl=1)
 
-# A demo of \`react-markdown\`
-
-\`react-markdown\` is a markdown component for React.
-
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
+```cpp
+ledcWrite(redChannel, 255);
+ledcWrite(greenChannel, 255);
+ledcWrite(blueChannel, 255);
 ```
 
-Pretty neat, eh?
+Boja LED Diode menja korisnik pri korišćenju web aplikacije.
 
-## GitHub flavored markdown (GFM)
+### 4.2.4 Potenciometar
 
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
+Potenciometar se koristi za unos korisnika. Promena otpornosti potenciometra se meri pomoću pina koji pretvara analogni signal u digitalnu signal koji predstavlja trenutnu vrednost optpornosti. Izmerena vrednost predstavlja virualnu bateriji koja se dalje šalje preko Bluetooth-a na povezan uređaj.
 
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
+```cpp
+uint16_t readBatteryLevel = analogRead(34);
+readBatteryLevel = map(readBatteryLevel, 0, 4092, 0, 100);
+pBatteryLevelCharacteristic->setValue(readBatteryLevel);
+pBatteryLevelCharacteristic->notify();
 ```
 
-## More info?
+# 5 Kod editor
 
-Much more info is available in the
+VSCode je najpopularniji kod editor među svim programerima. U ovom projektu se koristi Visual Studio Code zato što u istovremeno možemo da programiramo ESP32 u c++ i web aplikacije u typescript-u.
 
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
+IntelliSense omogućava automatsko dovršavanje koda i pametne preporuke što omogućava brži rad i manje grešaka pri pisanju programa. Ima sposobnost da direktno gleda u druge fajlove projekta i pravi pametne preporuke kao na primer automatsko ubacivanje lokacije fotografije u html.
 
----
+# 6 Implementacija koda
 
-A component by [Espen Hovlandsdal](https://espen.codes/)
+Struktura projekta:
 
-# A demo of \`react-markdown\`
-
-\`react-markdown\` is a markdown component for React.
-
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
+```bash
+|-- package.json        Fajl u kome se nalaze sve biblioteke
+|-- tsconfig.json       Fajl za definisanje typescripa
+|-- ESP_Code_PlatformIs Folder u kome se nalazi kod za ESP
+|   |-- esp32
+|   |   |-- .gitignore
+|   |   |-- platformio.ini
+|   |   |-- src
+|   |   |   |-- main.cpp Kod za ESP32
+|-- public
+|   |-- favicon.ico
+|   |-- index.html
+|   |-- logo192.png
+|   |-- logo512.png
+|   |-- manifest.json
+|   |-- robots.txt
+|-- src     Folder u kome se nalazi web aplikacija
+    |-- App.tsx             Glavni ulaz u aplikaciju
+    |-- Content.mdx         Tekst
+    |-- index.scss          Glavni css za celu aplikaciju
+    |-- index.tsx
+    |-- mdx.d.ts            Definicija za Typescript
+    |-- normalize.cssn      Css za normalizovanje HTML-a
+    |-- react-app-env.d.ts  Definicija za Typescript
+    |-- reportWebVitals.ts
+    |-- WelcomePage.tsx     Početna stranica
+    |-- BLE
+    |   |-- BLEProvider.tsx Komponenta za povezivanje Bluetooth-a
+    |   |-- hooks.ts
+    |-- sidenav
+        |-- NavBattery.tsx   Komponenta sa gtafikom za bateriju
+        |-- NavHeat.tsx      Komponenta za DHT senzor
+        |-- NavLight.tsx     Komponenta za kontorlu LED Diode
+        |-- NavText.tsx      Pomoćne komponente
+        |-- SideNav.tsx Navigacija u kojo se nalazi kontorla
 ```
 
-Pretty neat, eh?
+## 6.1 Web Aplikacija
 
-## GitHub flavored markdown (GFM)
+![https://lh4.googleusercontent.com/_ml4lSJ1x9sAnAJhqd4euS6_SuS_d1qj1EoN9f_jpOkpBim986LwHEZbiceWtEjB5CaItSTl7NhL0V9ZuUvX54tzv8T-sy2xkh4A11sjOR010RYIORP8Zco7OwqMG3qx-4NhuoNJ](https://lh4.googleusercontent.com/_ml4lSJ1x9sAnAJhqd4euS6_SuS_d1qj1EoN9f_jpOkpBim986LwHEZbiceWtEjB5CaItSTl7NhL0V9ZuUvX54tzv8T-sy2xkh4A11sjOR010RYIORP8Zco7OwqMG3qx-4NhuoNJ)
 
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
+Kod aplikacije
 
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
+[https://github.com/vjxDev/Maturski-Rad-Web-Bluetoot](https://github.com/vjxDev/Maturski-Rad-Web-Bluetooth)
 
-~~strikethrough~~
+![https://lh4.googleusercontent.com/GUuty9zyOaW35oAcOWNw5lpqw8XZzOgZXmCc8hW_8b9qrceNSv67cPdDo-GizKNcUSdBJ9UfFNxFVOkJolICVWQzDNb6WPHIcaSSrU7bpbTMzcgwgXyWxe7aI8_He8X8mUeyj2VP](https://lh4.googleusercontent.com/GUuty9zyOaW35oAcOWNw5lpqw8XZzOgZXmCc8hW_8b9qrceNSv67cPdDo-GizKNcUSdBJ9UfFNxFVOkJolICVWQzDNb6WPHIcaSSrU7bpbTMzcgwgXyWxe7aI8_He8X8mUeyj2VP)
 
-- [ ] task list
+Aplikacija na internetu
 
-- [x] checked item
+[https://vjxdev.github.io/maturski/](https://vjxdev.github.io/maturski/)
 
-https://example.com
+Izgled aplikacije:
 
-## HTML in markdown
+![./img/Untitled%201.png](./img/Untitled%201.png)
 
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
+Tok rada aplikacije:
 
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
+1. Pri otvaranju aplikacije korisnik može da klikne na connect dugme i izaćiće mu meni u kome se nalaze uređaju na koje može da se poveže.
+2. Kada se aplikacija poveže sa esp32 čita sve podatke i prikazuje ih na ekranu. Ako korisnik želi da menja boju svetla nephodno je klikne na dugme ispod naslova LED Dioda.
+3. Kada korisnik završi sa upotrebom aplikacije može da klikne disconnect dugme i da oslobodi bluetooth konekciju.
 
-You should probably combine it with
+## **6.2 ESP32**
 
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
+Izgled svih komponenti kada se povežu na esp32:
 
-<blockquote>
+![./img/20210608_173425.jpg](./img/20210608_173425.jpg)
 
-👆 Use the toggle above to add the plugin.
+Koraci rada mikroprocesora:
 
-</blockquote>
+1. Kada se esp32 uključi na ekranu izlazi poruka da je neophodno da se neki uređaj poveže i LED dioda počinje da trepće.
+2. Kada se neki uređaj poveže na esp32 led dioda prestaje da trepće i sluša za promene u karakteristiki za led. LCD display prikazuje trenutnu temperaturu i vlažnost vazduha na ekranu.
+3. Ako se otpornost potenciometra ili vrednosti DHT senzora promene to se šalje aplikaciji putem BLE.
+4. Kada se uređaj odveže od čipa na ekranu izlazi poruka da je nephodno da se novi uređaj poveže i LED dioda počinje ponovo da trepće.
 
-## Components
+# **7. Zakljucak**
 
-You can pass components to change things:
+Prethodne četiri godine si me načile mnog znanja iz elektro predmeta i programiranja, i ovaj rad to pokazuje. Ovaj rad je obuhvata sve što smo učili iz svih predmeta. Iz elektronike kako treba da se poveže tranzistor da bi dobili pojačanje strueje, rad a/d i d/a konvertora koji se nalaze u esp32 sistemnu na čupu. Znanje iz predmeta materija i ako različiti materijali mogu da se koriste za merenje temperature i vlažnosti vazduha.
 
-```js
-import React from "react";
+Naravno, znanje iz programiranja logičko povezivanje malih delova u veće celine za dalju upotrebu. Znanje iz programskog jezika c koje sam primenio na kodiranju esp32. Kao i znanje sa prakse iz html i css za izradu web aplikacije.
 
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
-
----
-
-A component by [Espen Hovlandsdal](https://espen.codes/)
-
-# A demo of \`react-markdown\`
-
-\`react-markdown\` is a markdown component for React.
-
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-Pretty neat, eh?
-
-## GitHub flavored markdown (GFM)
-
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
-
----
-
-A component by [Espen Hovlandsdal](https://espen.codes/)
-
-# A demo of \`react-markdown\`
-
-\`react-markdown\` is a markdown component for React.
-
-👉 Changes are re-rendered as you type.
-
-👈 Try writing some markdown on the left.
-
-## Overview
-
-## Overview
-
-- Follows [CommonMark](https://commonmark.org)
-
-- Optionally follows [GitHub Flavored Markdown](https://github.github.com/gfm/)
-
-- Renders actual React elements instead of using \`dangerouslySetInnerHTML\`
-
-- Lets you define your own components (to render \`MyHeading\` instead of \`h1\`)
-
-- Has a lot of plugins
-
-## Table of contents
-
-Here is an example of a plugin in action
-
-([\`remark-toc\`](https://github.com/remarkjs/remark-toc)).
-
-This section is replaced by an actual table of contents.
-
-## Syntax highlighting
-
-Here is an example of a plugin to highlight code:
-
-[\`rehype-highlight\`](https://github.com/rehypejs/rehype-highlight).
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-
-import rehypeHighlight from "rehype-highlight";
-
-ReactDOM.render(
-  <Markdown rehypePlugins={[rehypeHighlight]}>
-    {"# Your markdown here"}
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-Pretty neat, eh?
-
-## GitHub flavored markdown (GFM)
-
-For GFM, you can _also_ use a plugin:
-[\`remark-gfm\`](https://github.com/remarkjs/react-markdown#use).
-It adds support for GitHub-specific extensions to the language:
-tables, strikethrough, tasklists, and literal URLs.
-These features **do not work by default**.
-
-👆 Use the toggle above to add the plugin.
-| Feature | Support |
-| ---------: | :------------------- |
-| CommonMark | 100% |
-| GFM | 100% w/ \`remark-gfm\` |
-
-~~strikethrough~~
-
-- [ ] task list
-
-- [x] checked item
-
-https://example.com
-
-## HTML in markdown
-
-⚠️ HTML in markdown is quite unsafe, but if you want to support it, you can
-
-use [\`rehype-raw\`](https://github.com/rehypejs/rehype-raw).
-
-You should probably combine it with
-
-[\`rehype-sanitize\`](https://github.com/rehypejs/rehype-sanitize).
-
-<blockquote>
-
-👆 Use the toggle above to add the plugin.
-
-</blockquote>
-
-## Components
-
-You can pass components to change things:
-
-```js
-import React from "react";
-
-import ReactDOM from "react-dom";
-
-import Markdown from "react-markdown";
-import MyFancyRule from "./components/my-fancy-rule.js";
-
-ReactDOM.render(
-  <Markdown
-    components={{
-      // Use h2s instead of h1s
-
-      h1: "h2",
-
-      // Use a component instead of hrs
-
-      hr: ({ node, ...props }) => <MyFancyRule {...props} />,
-    }}
-  >
-    # Your markdown here
-  </Markdown>,
-  document.querySelector("#content")
-);
-```
-
-## More info?
-
-Much more info is available in the
-
-[readme on GitHub](https://github.com/remarkjs/react-markdown)!
-
----
-
-A component by [Espen Hovlandsdal](https://espen.codes/)
+Takoće je bilo neophodno dosta istraživanja kako radi Bluetooth low energy. Istraživanje kako ovaj zanimljiv standar može da se poveže sa esp32 i web aplikacijom. Najzanimljiviji deo svega ovoga jeste programiranje nečeka što je bilo samo ideja u realnu stvar koja radi.

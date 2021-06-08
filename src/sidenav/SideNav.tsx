@@ -8,7 +8,7 @@ export const SideNav = () => {
   const [Connect] = useConnect();
   const [Disconnect] = useDisconnect();
 
-  const { failed, device, isConnected } = useStatus();
+  const { failed, isConnected } = useStatus();
 
   // const { failed, device } = useStatus();
   // const isConnected = true;

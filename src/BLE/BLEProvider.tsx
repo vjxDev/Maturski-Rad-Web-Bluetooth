@@ -209,10 +209,8 @@ export const BLEProvider: FC = ({ children }) => {
     services: [],
     characteristics: [],
   });
-  const [
-    lightChar,
-    setLightChar,
-  ] = useState<BluetoothRemoteGATTCharacteristic>();
+  const [lightChar, setLightChar] =
+    useState<BluetoothRemoteGATTCharacteristic>();
 
   // const allServices: servicesType[] = [
   //   {
@@ -263,6 +261,7 @@ export const BLEProvider: FC = ({ children }) => {
     let server: BluetoothRemoteGATTServer;
     try {
       BLEdispatch({ type: Ty.Connecting });
+
       device = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
         optionalServices: [
@@ -271,6 +270,7 @@ export const BLEProvider: FC = ({ children }) => {
           "environmental_sensing",
         ],
       });
+
       device.addEventListener("gattserverdisconnected", HandelDisconnect);
       if (!device.gatt) {
         BLEdispatch({ type: Ty.Disconnect });
@@ -294,7 +294,6 @@ export const BLEProvider: FC = ({ children }) => {
         await new Promise((r) => setTimeout(r, 100));
         characteristics = [...characteristics, ...chars];
       }
-      console.log(characteristics);
 
       for (let i = 0; i < characteristics.length; i++) {
         const c = characteristics[i];
@@ -305,13 +304,11 @@ export const BLEProvider: FC = ({ children }) => {
           continue;
         }
         if (c.properties.notify) {
-          console.log("hello");
-
           await c.startNotifications();
 
-          c.addEventListener("characteristicvaluechanged", HandelValueChange);
+          c.addEventListener("characteristicvaluechanged", handelValueChange);
         } else {
-          c.addEventListener("characteristicvaluechanged", HandelValueChange);
+          c.addEventListener("characteristicvaluechanged", handelValueChange);
         }
       }
 
@@ -319,78 +316,37 @@ export const BLEProvider: FC = ({ children }) => {
         ...prevState,
         characteristics: [...characteristics],
       }));
-      console.log(valueState);
-
-      // services.forEach(async (service, i) => {
-      //   await new Promise((r) => setTimeout(r, i * 224));
-      //   console.trace();
-
-      //   characteristics = await service.getCharacteristics();
-      //   setSersAndChars((prevState) => ({
-      //     ...prevState,
-      //     characteristics: [...prevState.characteristics, ...characteristics],
-      //   }));
-
-      //   console.log(characteristics);
-
-      //   characteristics.forEach(async (c, j) => {
-      //     console.log(c, characteristics);
-
-      //     if (c.uuid === "beb5483e-36e1-4688-b7f5-ea07361b26a8") {
-      //       setLightChar(c);
-      //       return;
-      //     }
-      //     if (c.properties.notify) {
-      //       console.time(c.uuid);
-      //       await new Promise((r) => setTimeout(r, j * 1654));
-      //       console.timeEnd(c.uuid);
-
-      //       try {
-      //         await c.startNotifications();
-
-      //         console.error("HEllo");
-      //       } catch (error) {
-      //         console.error(error, c.uuid);
-      //       }
-      //       c.addEventListener("characteristicvaluechanged", HandelValueChange);
-      //     } else {
-      //       c.addEventListener("characteristicvaluechanged", HandelValueChange);
-      //     }
-      //   });
-      // });
     } catch (e) {
       console.log(e);
     }
   }
-  function HandelValueChange(e: Event) {
-    const char = e.target as BluetoothRemoteGATTCharacteristic;
-    if (char.value) {
-      const value = char.value;
 
+  function handelValueChange(e: Event) {
+    const char = e.target as BluetoothRemoteGATTCharacteristic;
+    const value = char.value;
+    console.log(value);
+    if (value) {
       switch (char.uuid) {
         //Temperature
         case "00002a6e-0000-1000-8000-00805f9b34fb":
           const a = value.getUint8(0) + value.getUint8(1) * 256;
-          // console.log("Temp: %o", value);
           valueDispatch({ type: TyValue.temperature, paload: a / 100 });
           break;
         //Humidity
         case "00002a6f-0000-1000-8000-00805f9b34fb":
           const hum = value.getUint8(0) + value.getUint8(1) * 256;
-          // console.log("Hum: %o", value);
           valueDispatch({ type: TyValue.humidity, paload: hum / 100 });
           break;
 
         // Battery Level
         case "00002a19-0000-1000-8000-00805f9b34fb":
           const batteryLevel = value.getUint8(0) + value.getUint8(1) * 256;
-          // console.log(`Battery: ${batteryLevel} %o`, value);
-          console.log(batteryLevel);
           valueDispatch({ type: TyValue.batteryLevel, paload: batteryLevel });
           break;
         // Battery Power State
         case "00002a1a-0000-1000-8000-00805f9b34fb":
           break;
+
         case "beb5483e-36e1-4688-b7f5-ea07361b26a8":
           const RGB = parseRGB(value);
           valueDispatch({ type: TyValue.Lights, paload: RGB });
@@ -409,7 +365,7 @@ export const BLEProvider: FC = ({ children }) => {
   }
   function HandelDisconnect(e: Event) {
     sersAndChars.characteristics.forEach((c) => {
-      c.removeEventListener("characteristicvaluechanged", HandelValueChange);
+      c.removeEventListener("characteristicvaluechanged", handelValueChange);
     });
     setSersAndChars({ characteristics: [], services: [] });
     console.log(e.target);
